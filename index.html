@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MUSIC SOUNDBOARD</title>
+    <title>Music Video Playlist</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: sans-serif;
         }
 
         body {
@@ -36,26 +36,23 @@
             background: #1e1e1e;
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
         }
 
-        .main-video {
+        .main-video-container {
             flex: 2;
-            position: relative;
-            padding-bottom: 45%; /* 16:9 Aspect Ratio */
-            height: 0;
-            overflow: hidden;
-            border-radius: 8px;
             background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .main-video iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
+        video {
             width: 100%;
-            height: 100%;
-            border: none;
+            height: auto;
+            max-height: 500px;
+            display: block;
         }
 
         .playlist {
@@ -63,25 +60,22 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            max-height: 450px;
-            overflow-y: auto;
         }
 
         .playlist-item {
             display: flex;
             align-items: center;
             gap: 15px;
-            padding: 10px;
+            padding: 15px;
             background: #2a2a2a;
             border-radius: 8px;
             cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
             border-left: 5px solid transparent;
+            transition: background 0.2s;
         }
 
         .playlist-item:hover {
-            background: #383838;
-            transform: translateX(5px);
+            background: #333;
         }
 
         .playlist-item.active {
@@ -90,21 +84,21 @@
         }
 
         .thumbnail-placeholder {
-            width: 80px;
+            width: 70px;
             height: 45px;
             background: #444;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 11px;
             border-radius: 4px;
-            color: #aaa;
+            color: #ccc;
             font-weight: bold;
         }
 
         .video-info h3 {
             font-size: 16px;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .video-info p {
@@ -116,9 +110,6 @@
             .container {
                 flex-direction: column;
             }
-            .main-video {
-                padding-bottom: 56.25%;
-            }
         }
     </style>
 </head>
@@ -127,14 +118,14 @@
     <h1>Pop Classics Playlist</h1>
 
     <div class="container">
-        <!-- Main Video Player -->
-        <div class="main-video">
-            <iframe id="video-player" src="https://youtube.com" allowfullscreen></iframe>
+        <!-- Native HTML5 Video Player -->
+        <div class="main-video-container">
+            <video id="video-player" controls autoplay src="https://archive.org"></video>
         </div>
 
         <!-- Sidebar Playlist -->
         <div class="playlist">
-            <div class="playlist-item active" onclick="changeVideo('https://youtube.com', this)">
+            <div class="playlist-item active" onclick="changeVideo('https://archive.org', this)">
                 <div class="thumbnail-placeholder">TGIF</div>
                 <div class="video-info">
                     <h3>Last Friday Night (T.G.I.F.)</h3>
@@ -142,7 +133,7 @@
                 </div>
             </div>
 
-            <div class="playlist-item" onclick="changeVideo('https://youtube.com', this)">
+            <div class="playlist-item" onclick="changeVideo('https://archive.org', this)">
                 <div class="thumbnail-placeholder">1000M</div>
                 <div class="video-info">
                     <h3>A Thousand Miles</h3>
@@ -150,7 +141,7 @@
                 </div>
             </div>
 
-            <div class="playlist-item" onclick="changeVideo('https://youtube.com', this)">
+            <div class="playlist-item" onclick="changeVideo('https://archive.org', this)">
                 <div class="thumbnail-placeholder">CMB</div>
                 <div class="video-info">
                     <h3>Call Me Maybe</h3>
@@ -162,17 +153,20 @@
 
     <script>
         function changeVideo(videoUrl, element) {
-            // Update the iframe source
-            document.getElementById('video-player').src = videoUrl;
+            const player = document.getElementById('video-player');
+            
+            // Change source and load new video
+            player.src = videoUrl;
+            player.load();
+            player.play();
 
-            // Remove active class from all items
+            // Handle active menu switching
             const items = document.querySelectorAll('.playlist-item');
             items.forEach(item => item.classList.remove('active'));
-
-            // Add active class to the clicked item
             element.classList.add('active');
         }
     </script>
 
 </body>
 </html>
+
