@@ -1,0 +1,95 @@
+using UnityEngine;
+using Photon.Pun;
+
+public class GorillaNetworkSoundboard : MonoBehaviourPun
+{
+    [Header("Audio Configurations")]
+    public AudioSource globalAudioSource; // Drag your scene's AudioSource here
+
+    [Header("Audio Clips Mapping")]
+    [Tooltip("Slot 0 = Last Friday Night, Slot 1 = Call Me Maybe, Slot 2 = A Thousand Miles")]
+    public AudioClip[] songClips = new AudioClip[3];
+
+    [Header("Button Animations")]
+    public Transform[] physicalButtons = new Transform[3]; // The moving 3D parts of your buttons
+    public float pushDistance = 0.04f;
+    public float returnSpeed = 12f;
+
+    private Vector3[] originalPositions = new Vector3[3];
+    private bool[] isButtonPressed = new bool[3];
+
+    void Start()
+    {
+        // Save the starting positions of all 3 buttons so they can bounce back
+        for (int i = 0; i < physicalButtons.Length; i++)
+        {
+            if (physicalButtons[i] != null)
+            {
+                originalPositions[i] = physicalButtons[i].localPosition;
+            }
+        }
+
+        // Auto-grab AudioSource if you forgot to assign it
+        if (globalAudioSource == null)
+        {
+            globalAudioSource = GetComponent<AudioSource>();
+        }
+    }
+
+    void Update()
+    {
+        // Smoothly return buttons back to their normal resting height
+        for (int i = 0; i < physicalButtons.Length; i++)
+        {
+            if (physicalButtons[i] != null && !isButtonPressed[i])
+            {
+                physicalButtons[i].localPosition = Vector3.Lerp(
+                    physicalButtons[i].localPosition, 
+                    originalPositions[i], 
+                    Time.deltaTime * returnSpeed
+                );
+            }
+        }
+    }
+
+    // Call this function from your physical 3D button trigger scripts
+    public void PressSoundboardButton(int songIndex)
+    {
+        // Safety check to prevent array crashes
+        if (songIndex < 0 || songIndex >= songClips.Length) return;
+
+        if (!isButtonPressed[songIndex])
+        {
+            isButtonPressed[songIndex] = true;
+
+            // Move button visual downwards
+            if (physicalButtons[songIndex] != null)
+            {
+                physicalButtons[songIndex].localPosition = originalPositions[songIndex] - new Vector3(0, pushDistance, 0);
+            }
+
+            // Send the network signal via Photon RPC so everyone hears the music
+            photonView.RPC("RPC_NetworkPlaySong", RpcTarget.All, songIndex);
+        }
+    }
+
+    public void ReleaseSoundboardButton(int songIndex)
+    {
+        if (songIndex >= 0 && songIndex < isButtonPressed.Length)
+        {
+            isButtonPressed[songIndex] = false;
+        }
+    }
+
+    // This target method executes automatically across the network for all clients
+    [PunRPC]
+    private void RPC_NetworkPlaySong(int index)
+    {
+        if (globalAudioSource != null && songClips[index] != null)
+        {
+            globalAudioSource.Stop(); // Cut off the previous track cleanly
+            globalAudioSource.clip = songClips[index];
+            globalAudioSource.Play();
+        }
+    }
+}
