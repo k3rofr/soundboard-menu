@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MUSIC MENU</title>
+    <title>My Local Music Video Playlist</title>
     <style>
         * {
             box-sizing: border-box;
@@ -118,14 +118,14 @@
     <h1>Pop Classics Playlist</h1>
 
     <div class="container">
-        <!-- Native HTML5 Video Player -->
+        <!-- Native HTML5 Video Player using your first local video -->
         <div class="main-video-container">
-            <video id="video-player" controls autoplay src="https://archive.org"></video>
+            <video id="video-player" controls autoplay src="friday.mp4"></video>
         </div>
 
-        <!-- Sidebar Playlist -->
+        <!-- Sidebar Playlist linking to your local video paths -->
         <div class="playlist">
-            <div class="playlist-item active" onclick="changeVideo('https://archive.org', this)">
+            <div class="playlist-item active" onclick="changeVideo('friday.mp4', this)">
                 <div class="thumbnail-placeholder">TGIF</div>
                 <div class="video-info">
                     <h3>Last Friday Night (T.G.I.F.)</h3>
@@ -133,7 +133,7 @@
                 </div>
             </div>
 
-            <div class="playlist-item" onclick="changeVideo('https://archive.org', this)">
+            <div class="playlist-item" onclick="changeVideo('miles.mp4', this)">
                 <div class="thumbnail-placeholder">1000M</div>
                 <div class="video-info">
                     <h3>A Thousand Miles</h3>
@@ -141,7 +141,7 @@
                 </div>
             </div>
 
-            <div class="playlist-item" onclick="changeVideo('https://archive.org', this)">
+            <div class="playlist-item" onclick="changeVideo('maybe.mp4', this)">
                 <div class="thumbnail-placeholder">CMB</div>
                 <div class="video-info">
                     <h3>Call Me Maybe</h3>
@@ -154,13 +154,10 @@
     <script>
         function changeVideo(videoUrl, element) {
             const player = document.getElementById('video-player');
-            
-            // Change source and load new video
             player.src = videoUrl;
             player.load();
             player.play();
 
-            // Handle active menu switching
             const items = document.querySelectorAll('.playlist-item');
             items.forEach(item => item.classList.remove('active'));
             element.classList.add('active');
@@ -169,4 +166,3 @@
 
 </body>
 </html>
-
