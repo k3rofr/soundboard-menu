@@ -1,0 +1,24 @@
+using UnityEngine;
+
+public class SoundboardTrigger : MonoBehaviour
+{
+    public GorillaNetworkSoundboard mainSoundboard;
+    [Tooltip("0 = Last Friday Night, 1 = Call Me Maybe, 2 = A Thousand Miles")]
+    public int songID;
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Hand") || other.name.Contains("Hand"))
+        {
+            mainSoundboard.PressSoundboardButton(songID);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Hand") || other.name.Contains("Hand"))
+        {
+            mainSoundboard.ReleaseSoundboardButton(songID);
+        }
+    }
+}
